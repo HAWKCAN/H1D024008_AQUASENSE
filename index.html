@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AquaSense — Penilai Kelayakan Air</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Instrument Serif','Georgia','serif'],
+            sans:  ['Geist','system-ui','sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:3px;border-radius:2px;outline:none;cursor:pointer;background:#e7e5e4}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#1c1917;border:3px solid white;box-shadow:0 0 0 1.5px #1c1917;cursor:pointer;transition:transform .15s}
+    input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+    input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#1c1917;border:3px solid white;cursor:pointer}
+    input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+    input[type=number]{-moz-appearance:textfield}
+    ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:#d6d3d1;border-radius:2px}
+    #gaugeFill{transition:stroke-dashoffset .7s cubic-bezier(.4,0,.2,1),stroke .4s}
+    #gaugeDot{transition:all .7s cubic-bezier(.4,0,.2,1)}
+    .bd-fill{transition:width .6s cubic-bezier(.4,0,.2,1)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .fade-up{animation:fadeUp .4s ease both}
+    .sl-row:nth-child(1){animation-delay:.04s}.sl-row:nth-child(2){animation-delay:.08s}
+    .sl-row:nth-child(3){animation-delay:.12s}.sl-row:nth-child(4){animation-delay:.16s}
+    .sl-row:nth-child(5){animation-delay:.20s}.sl-row:nth-child(6){animation-delay:.24s}
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-900 font-sans antialiased min-h-screen">
+
+<!-- TOPBAR -->
+<header class="border-b border-stone-200 bg-white/90 backdrop-blur-sm sticky top-0 z-50">
+  <div class="max-w-5xl mx-auto px-5 h-14 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
+        <path d="M11 2C11 2 4 9.5 4 14a7 7 0 0014 0C18 9.5 11 2 11 2Z" fill="#1c1917"/>
+        <path d="M11 10C11 10 8 13.5 8 15.5a3 3 0 006 0C14 13.5 11 10 11 10Z" fill="white"/>
+      </svg>
+      <span class="font-serif text-[17px]">AquaSense</span>
+    </div>
+    <nav class="flex items-center bg-stone-100 rounded-full p-1 gap-0.5">
+      <button data-tab="fuzzy" class="nav-tab px-4 py-1.5 rounded-full text-xs font-medium transition-all bg-stone-900 text-white">⚙ Fuzzy Logic</button>
+      <button data-tab="expert" class="nav-tab px-4 py-1.5 rounded-full text-xs font-medium transition-all text-stone-500 hover:text-stone-800">🔬 Sistem Pakar</button>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="bg-white border-b border-stone-200">
+  <div class="max-w-5xl mx-auto px-5 py-10 md:py-14">
+    <p class="text-[10px] font-medium tracking-[.16em] uppercase text-stone-400 mb-3">Water Quality Analysis</p>
+    <h1 class="font-serif text-4xl md:text-5xl leading-tight text-stone-900 mb-3">
+      Uji Kelayakan <em>Air Konsumsi</em>
+    </h1>
+    <p class="text-stone-400 text-sm max-w-sm leading-relaxed">Fuzzy Logic & Forward Chaining sesuai standar WHO dan Permenkes RI.</p>
+  </div>
+</section>
+
+<!-- FUZZY TAB -->
+<div id="tab-fuzzy" class="tab-content">
+  <div class="max-w-5xl mx-auto px-5 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-5 items-start">
+
+      <!-- Sliders -->
+      <div>
+        <p class="text-[10px] font-medium tracking-[.14em] uppercase text-stone-400 mb-4">Parameter Input</p>
+        <div id="sliderList" class="space-y-2.5"></div>
+
+        <!-- Stages -->
+        <div class="mt-5 p-5 bg-white border border-stone-200 rounded-2xl">
+          <p class="text-[10px] font-medium tracking-[.12em] uppercase text-stone-400 mb-4">Proses Inferensi Fuzzy</p>
+          <div class="grid grid-cols-4 gap-2 text-center">
+            <div><div class="w-8 h-8 rounded-lg bg-stone-100 flex items-center justify-center text-sm font-serif mx-auto mb-1.5">μ</div><p class="text-[9px] text-stone-400 font-medium">Fuzzifikasi</p></div>
+            <div><div class="w-8 h-8 rounded-lg bg-stone-100 flex items-center justify-center text-sm font-serif mx-auto mb-1.5">⇒</div><p class="text-[9px] text-stone-400 font-medium">Inferensi</p></div>
+            <div><div class="w-8 h-8 rounded-lg bg-stone-100 flex items-center justify-center text-sm font-serif mx-auto mb-1.5">∪</div><p class="text-[9px] text-stone-400 font-medium">Agregasi</p></div>
+            <div><div class="w-8 h-8 rounded-lg bg-stone-100 flex items-center justify-center text-sm font-serif mx-auto mb-1.5">∫</div><p class="text-[9px] text-stone-400 font-medium">Defuzzifikasi</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result card -->
+      <div class="lg:sticky lg:top-[72px]">
+        <p class="text-[10px] font-medium tracking-[.14em] uppercase text-stone-400 mb-4">Hasil</p>
+        <div class="bg-white border border-stone-200 rounded-2xl overflow-hidden">
+          <div class="p-5 border-b border-stone-100">
+            <div class="flex items-center gap-3">
+              <svg viewBox="0 0 160 90" class="w-28 flex-shrink-0">
+                <path d="M 10 80 A 70 70 0 0 1 150 80" fill="none" stroke="#f5f5f4" stroke-width="12" stroke-linecap="round"/>
+                <path id="gaugeFill" d="M 10 80 A 70 70 0 0 1 150 80" fill="none" stroke="#1c1917" stroke-width="10" stroke-linecap="round" stroke-dasharray="220" stroke-dashoffset="220"/>
+                <circle id="gaugeDot" cx="80" cy="80" r="5" fill="#1c1917" stroke="white" stroke-width="2"/>
+              </svg>
+              <div>
+                <div class="font-serif text-5xl leading-none" id="fuzzyScore">—</div>
+                <div class="text-stone-400 text-[11px] mt-1">skor / 100</div>
+              </div>
+            </div>
+          </div>
+          <div class="p-4 border-b border-stone-100">
+            <div class="flex items-start gap-2.5">
+              <div class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 bg-stone-300 transition-colors" id="verdictDot"></div>
+              <div>
+                <p class="font-medium text-sm" id="verdictTitle">Geser parameter</p>
+                <p class="text-xs text-stone-400 mt-0.5" id="verdictSub">untuk melihat hasil analisis</p>
+              </div>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] font-medium tracking-[.10em] uppercase text-stone-400 mb-3">Breakdown</p>
+            <div id="breakdownList" class="space-y-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPERT TAB -->
+<div id="tab-expert" class="tab-content hidden">
+  <div class="max-w-5xl mx-auto px-5 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-5 items-start">
+
+      <div>
+        <p class="text-[10px] font-medium tracking-[.14em] uppercase text-stone-400 mb-4">Gejala yang Diamati</p>
+        <div id="symptomGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5"></div>
+
+        <div class="bg-white border border-stone-200 rounded-2xl p-5 mb-4">
+          <div class="flex items-center gap-2 mb-4">
+            <p class="text-[10px] font-medium tracking-[.12em] uppercase text-stone-400">Nilai Terukur</p>
+            <span class="text-[9px] tracking-wider text-stone-400 border border-stone-200 rounded-full px-2 py-0.5">opsional</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="block text-[10px] uppercase tracking-wider text-stone-400 mb-1.5 font-medium">pH</label>
+              <input id="inp-ph" type="number" placeholder="6.5–8.5" step="0.1" min="0" max="14" class="w-full border border-stone-200 rounded-xl px-3 py-2.5 text-sm bg-stone-50 focus:outline-none focus:border-stone-400 focus:bg-white transition-colors placeholder-stone-300"/></div>
+            <div><label class="block text-[10px] uppercase tracking-wider text-stone-400 mb-1.5 font-medium">Turbidity (NTU)</label>
+              <input id="inp-turb" type="number" placeholder="maks 4" step="0.1" min="0" class="w-full border border-stone-200 rounded-xl px-3 py-2.5 text-sm bg-stone-50 focus:outline-none focus:border-stone-400 focus:bg-white transition-colors placeholder-stone-300"/></div>
+            <div><label class="block text-[10px] uppercase tracking-wider text-stone-400 mb-1.5 font-medium">TDS (ppm)</label>
+              <input id="inp-tds" type="number" placeholder="maks 500" step="1" min="0" class="w-full border border-stone-200 rounded-xl px-3 py-2.5 text-sm bg-stone-50 focus:outline-none focus:border-stone-400 focus:bg-white transition-colors placeholder-stone-300"/></div>
+            <div><label class="block text-[10px] uppercase tracking-wider text-stone-400 mb-1.5 font-medium">Klorin (mg/L)</label>
+              <input id="inp-chlor" type="number" placeholder="maks 4" step="0.1" min="0" class="w-full border border-stone-200 rounded-xl px-3 py-2.5 text-sm bg-stone-50 focus:outline-none focus:border-stone-400 focus:bg-white transition-colors placeholder-stone-300"/></div>
+          </div>
+        </div>
+
+        <button id="inferBtn" class="w-full bg-stone-900 hover:bg-stone-700 active:scale-[.98] text-white text-sm font-medium rounded-xl px-6 py-3.5 transition-all flex items-center justify-center gap-2 disabled:opacity-50">
+          Jalankan Inferensi <span id="btnArrow">→</span>
+        </button>
+      </div>
+
+      <div class="lg:sticky lg:top-[72px]">
+        <p class="text-[10px] font-medium tracking-[.14em] uppercase text-stone-400 mb-4">Hasil Inferensi</p>
+        <div id="expertResult" class="bg-white border border-stone-200 rounded-2xl overflow-hidden max-h-[72vh] overflow-y-auto">
+          <div class="p-8 text-center text-stone-400">
+            <div class="text-2xl mb-3">🔬</div>
+            <p class="text-sm leading-relaxed">Centang gejala lalu<br/>klik Jalankan Inferensi</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="border-t border-stone-200 bg-white mt-8">
+  <div class="max-w-5xl mx-auto px-5 py-5 flex flex-wrap justify-between items-center gap-2 text-[11px] text-stone-400">
+    <span class="font-serif text-stone-500">AquaSense</span>
+    <span>WHO Guidelines · SNI 3553:2015 · Permenkes 492/2010</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
