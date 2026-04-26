@@ -1,4 +1,4 @@
-# 💧 AquaSense — Penilai Kelayakan Air Konsumsi
+#  AquaSense — Penilai Kelayakan Air Konsumsi
 
 Aplikasi web untuk menilai kelayakan air konsumsi menggunakan **Fuzzy Logic** dan **Sistem Pakar (Forward Chaining)**. Dibangun dengan HTML, Tailwind CSS, dan Vanilla JavaScript — tanpa backend, tanpa dependensi.
 
@@ -15,7 +15,7 @@ SHFIT BARU: G
 
 ---
 
-## ✨ Fitur
+## Fitur
 
 | Fitur                   | Detail                                                               |
 | ----------------------- | -------------------------------------------------------------------- |
@@ -27,7 +27,7 @@ SHFIT BARU: G
 
 ---
 
-## 📁 Struktur
+## Struktur
 
 ```
 aquasense/
@@ -38,7 +38,7 @@ aquasense/
 
 ---
 
-## 🧠 Cara Kerja
+## Cara Kerja
 
 ### Sistem Fuzzy
 
@@ -61,7 +61,7 @@ Forward Chaining dengan 7 rule dan 12 gejala. Input numerik otomatis menambah ge
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - WHO Guidelines for Drinking-water Quality, 4th Ed. (2017)
 - SNI 3553:2015 — Air Minum Dalam Kemasan
@@ -69,7 +69,3 @@ Forward Chaining dengan 7 rule dan 12 gejala. Input numerik otomatis menambah ge
 - Permenkes No. 736/2010
 
 ---
-
-## 📄 Lisensi
-
-MIT License
